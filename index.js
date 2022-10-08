@@ -1,11 +1,11 @@
 const {
     Telegram,
-    InlineKeyboardBuilder,
 } = require('puregram');
 
 const os = require('os')
 const si = require('systeminformation');
 const domainPing = require("domain-ping");
+const { Logger, Color } = require('@starkow/logger')
 
 const { execSync } = require('child_process');
 
@@ -16,8 +16,6 @@ const {
 } = require("@puregram/hear");
 
 const hearManager = new HearManager()
-
-const ids = process.env.ADMIN_IDS
 
 const telegram = Telegram.fromToken(process.env.TELEGRAM_BOT_TOKEN, {
 })
@@ -60,14 +58,12 @@ async function main() {
 
     await telegram.updates.startPolling().then(
         async () => {
-        console.log(`Started polling @${telegram.bot.username}!`)
+        Logger.create('Polling started from bot:', Color.Green)(`@${telegram.bot.username}!`)
     }
-    ).catch(console.error);
-    
+    ).catch(error => Logger.create('Polling error', Color.Red)(error));
 }
 
 main()
-
 
 function bytesToSize(bytes) {
     var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
